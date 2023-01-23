@@ -1,0 +1,254 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Tables {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/soft-ui-dashboard.min.js?v=1.0.6"></script>
+
+
+<link href="{{ config.ASSETS_ROOT }}/fancy_tree/skin-win8/ui.fancytree.min.css" rel="stylesheet">
+
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/modules/jquery.fancytree.ui-deps.js"></script>
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/modules/jquery.fancytree.js"></script>
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/modules/jquery.fancytree.ariagrid.js"></script>
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/modules/jquery.fancytree.clones.js"></script>
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/modules/jquery.fancytree.dnd5.js"></script>
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/modules/jquery.fancytree.edit.js"></script>
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/modules/jquery.fancytree.filter.js"></script>
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/modules/jquery.fancytree.grid.js"></script>
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/modules/jquery.fancytree.logger.js"></script>
+<script src="{{ config.ASSETS_ROOT }}/fancy_tree/modules/jquery.fancytree.childcounter.js"></script>
+
+<style>
+  .hoverable-card{
+
+  }
+
+  .hoverable-card:hover{
+    cursor: grabbing;
+    border-width: 1px;
+  }
+
+  .project-padding{
+    padding-top: calc(var(--bs-gutter-x) * 0.5);
+    padding-bottom: calc(var(--bs-gutter-x) * 0.5);
+  }
+
+
+
+  *, *:before, *:after {
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+    html, body.flexbox-body {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .page-container {
+      /* background: rgba(255, 255, 255, .1); */
+      padding: 10px;
+    }
+    .flexbox-parent {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+
+        justify-content: flex-start; /* align items in Main Axis */
+        align-items: stretch; /* align items in Cross Axis */
+        align-content: stretch; /* Extra space in Cross Axis */
+    }
+    .flexbox-item {
+        padding: 8px;
+    }
+    .flexbox-item-grow {
+        flex: 1; /* same as flex: 1 1 auto; */
+    }
+
+    /* .flexbox-item.header {
+        background: rgba(255, 0, 0, .1);
+    }
+    .flexbox-item.footer {
+        background: rgba(0, 255, 0, .1);
+    }
+    .flexbox-item.content {
+        background: rgba(0, 0, 255, .1);
+    } */
+    .fill-area {
+        display: flex;
+        flex-direction: row;
+
+        justify-content: flex-start; /* align items in Main Axis */
+        align-items: stretch; /* align items in Cross Axis */
+        align-content: stretch; /* Extra space in Cross Axis */
+
+    }
+    .fill-area-content {
+        background: rgba(0, 0, 0, .3);
+        border: 1px solid #000000;
+
+        /* Needed for when the area gets squished too far and there is content that can't be displayed */
+        overflow: auto;
+    }
+
+    header, footer {
+      /* flex: 0 0; */
+      background-color: #f7f7f7;
+      /* padding: 1rem; */
+    }
+    /* custom alignment (set by 'renderColumns' event) */
+    table.fancytree-ext-table {
+       /* flex: 1; */
+       width: 100%;
+       border-collapse: collapse;
+       border: 1px dotted #f4f4f8;
+       caption-side: bottom;
+    }
+    /* Support scrolling  */
+    div.fancytree-grid-container {
+      /* Use whole parent heigt*/
+      flex: 1;
+      /* Stretch embedded table */
+      display: flex;
+      flex-direction: column;
+      min-height: 30px;
+      /*  */
+      padding: 0;
+      border: 1px solid gray;
+      /* The div should not be stretched by the content rows, because we want to
+         adust the row count from div height instead: */
+      overflow-y: hidden;
+    }
+
+    div.fancytree-grid-container > table.fancytree-ext-grid {
+      flex: 1;
+      width: 100%;
+      border: 0;
+      margin: 1px 0 1px 0;  /* 1px above and below. */
+    }
+    /* Ext-grid breaks if another extension hides rows. */
+    table.fancytree-ext-grid tbody tr.fancytree-hide {
+        display: table-row;
+    }
+
+    /* Set alternating row colors (define BEFORE standard css). */
+    table.fancytree-ext-table tbody tr:nth-child(even){
+      background-color: #fafafa;
+    }
+
+    table.fancytree-ext-table thead th.parent-path {
+       text-align: left;
+    }
+    table.fancytree-ext-table td:nth-child(2) {
+       width: 150px;
+    }
+    table.fancytree-ext-table td:nth-child(4) {
+       text-align: right;
+    }
+    table.fancytree-ext-table td:nth-child(5) {
+       text-align: center;
+    }
+
+
+
+
+
+</style>
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <!--
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>Projects</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="col-xl-12"
+                         style="padding-left: calc(var(--bs-gutter-x) * 0.5); padding-right: calc(var(--bs-gutter-x) * 0.5);">
+
+                        <div class="input-group">
+                            <span class="input-group-text text-body"><i class="fas fa-search"
+                                                                        aria-hidden="true"></i></span> <input
+                                type="text" class="form-control" placeholder="Type here..." onfocus="focused(this)"
+                                onfocusout="defocused(this)">
+                        </div>
+
+                        <div class="row">
+                            {%- for project in projects %}
+                            <div class="col-md-3 project-padding">
+                                <div class="card hoverable-card">
+                                    <div class="card-header mx-4 p-3 text-center">
+                                        <div class="icon icon-shape icon-lg bg-gradient-primary shadow text-center border-radius-lg">
+                                            <i class="fas fa-landmark opacity-10" aria-hidden="true"></i></div>
+                                    </div>
+                                    <div class="card-body pt-0 p-3 text-center"><h6 class="text-center mb-0">{{
+                                        project.name }}</h6>
+                                        <span class="text-xs">{{ project.description }}</span>
+                                        <hr class="horizontal dark my-3">
+                                        <h5 class="mb-0">{{ project.usage }}</h5></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    -->
+    <div class="row">
+        <div class="col-12">
+
+            <div class="input-group">
+                <span class="input-group-text text-body">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                </span>
+                <input name="search" type="text" class="form-control" placeholder="Type here...">
+                <button id="btnResetSearch">&times;</button>
+                <button id="btnResetSearch2">Download Selected</button>
+            </div>
+            <div class="fancytree-grid-container flexbox-item-grow">
+                <table id="treetable" style="width: 100%;">
+                    <!-- <caption>Loading&hellip;</caption> -->
+                    <colgroup>
+                        <col width="5%"></col>
+                        <col width="70%"></col>
+                        <col width="10%"></col>
+                        <col width="15%"></col>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th class="parent-path"></th>
+                        <th>Size (bytes)</th>
+                        <th>Last Modified</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {% include "includes/footer.html" %}
+
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<script src="{{ config.ASSETS_ROOT }}/js/project.js"></script>
+
+{% endblock javascripts %}

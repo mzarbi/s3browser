@@ -1,0 +1,12 @@
+[
+	{"title": "Books","key": "1", "folder" :  true, "children": [
+		{"title": "Art of War","key": "1.1", "type": "book", "author": "Sun Tzu", "year": -500, "qty": 21, "price": 5.95},
+		{"title": "The Hobbit","key": "1.2", "type": "book", "author": "J.R.R. Tolkien", "year": 1937, "qty": 32, "price": 8.97},
+		{"title": "The Little Prince","key": "1.3", "type": "book", "author": "Antoine de Saint-Exupery", "year": 1943, "qty": 2946, "price": 6.82},
+		{"title": "Don Quixote","key": "1.4", "type": "book", "author": "Miguel de Cervantes", "year": 1615, "qty": 932, "price": 15.99}
+	]},
+	{"title": "Music","key": "2", "children": [
+		{"title": "Nevermind","key": "2.1", "type": "music", "author": "Nirvana", "year": 1991, "qty": 916, "price": 15.95},
+		{"title": "Autobahn","key": "2.2", "type": "music", "author": "Kraftwerk", "year": 1974, "qty": 2261, "price": 23.98}
+	]}
+]
